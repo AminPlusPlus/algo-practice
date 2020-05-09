@@ -56,6 +56,11 @@ public class Graph {
 
     }
 
+    /**
+     *
+     * @param from
+     * @param to
+     */
     public void removeEdge(String from , String to) {
         GraphNode fromNode = nodes.get(from);
         GraphNode toNode = nodes.get(to);
@@ -67,6 +72,10 @@ public class Graph {
 
     }
 
+    /**
+     *
+     * @param root
+     */
     public void depthSearchIterative(String root) {
 
         //Null Check
@@ -96,6 +105,31 @@ public class Graph {
         }
     }
 
+    /**
+     *
+     * @param root
+     */
+    public void depthFirstSearch(String root){
+        GraphNode graphNode = nodes.get(root);
+        if (graphNode == null)
+            return;
+
+        depthFirstSearch(graphNode,new HashSet<>());
+    }
+
+    /**
+     *
+     * @param root
+     * @param visited
+     */
+    private void depthFirstSearch(GraphNode root,Set<GraphNode> visited){
+        System.out.println(root);
+        visited.add(root);
+
+        for (var n : adjacencyList.get(root))
+            if(!visited.contains(n))
+                depthFirstSearch(n,visited);
+    }
 
     /**
      *
@@ -137,7 +171,7 @@ public class Graph {
      * @param s
      * @return
      */
-    public void breathSearchFirst(String s) {
+    public void breathSearchFirstIterative(String s) {
 
         GraphNode node = nodes.get(s);
         if (node == null)
@@ -165,6 +199,59 @@ public class Graph {
 
 
     }
+
+    public void breathSearchFirst(String root) {
+        GraphNode graphNode = nodes.get(root);
+        if (graphNode == null)
+            return;
+
+        breathSearchFirst(graphNode,new HashSet<>());
+    }
+    private void breathSearchFirst(GraphNode node,Set<GraphNode> visited) {
+        System.out.println(node);
+        visited.add(node);
+
+        for (GraphNode n : adjacencyList.get(node)) {
+            System.out.println(n);
+            visited.add(n);
+        }
+    }
+
+
+    public Boolean hasCycle (){
+        Set<GraphNode> allNodes = new HashSet<>();
+        allNodes.addAll(nodes.values());
+        Set<GraphNode> visiting = new HashSet<>();
+        Set<GraphNode> visited = new HashSet<>();
+
+        while(!allNodes.isEmpty())
+        {
+            return  hasCycle(allNodes.iterator().next(),
+                    allNodes,
+                    visiting,
+                    visited);
+        }
+        return false;
+    }
+    private Boolean hasCycle(GraphNode node,Set<GraphNode> all,
+                             Set<GraphNode> visiting, Set<GraphNode> visited)
+    {
+        all.remove(node);
+        visiting.add(node);
+
+        for (var n : adjacencyList.get(node)){
+            if (visited.contains(n))
+                continue;
+            if (visiting.contains(n))
+                return true;
+           return  (hasCycle(n,all,visiting,visited)) ? true : false;
+        }
+        visiting.remove(node);
+        visited.add(node);
+        return false;
+
+    }
+
 
    public void print() {
         for (GraphNode source : adjacencyList.keySet()) {
